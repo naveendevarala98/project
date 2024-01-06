@@ -3,13 +3,16 @@ package ecommerce.controller;
 import ecommerce.entity.Product;
 import ecommerce.model.ProductListRequest;
 import ecommerce.model.ProductRequest;
+import ecommerce.model.Response;
 import ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,4 +39,29 @@ public class ProductController {
         productData.setProductDescription(productRequest.getProdutDescription());
         return productData;
     }
+
+    @GetMapping(value={
+            "/get",
+            "/get/{productId}"
+    })
+    public Response getProductDetails(@PathVariable(value = "productId", required = false) Long productId){
+        Response response = new Response();
+        if(productId != null) {
+            Optional<Product> product = productRepository.findById(productId);
+            if(product.isPresent()){
+                List<Product> productList = new ArrayList<>();
+                productList.add(product.get());
+                 response.setProductList(productList);
+                 return response;
+            }else{
+                response.setMessage("No Content");
+                return response;
+            }
+        }
+        List<Product> productList = productRepository.findAll();
+        response.setProductList(productList);
+            return response;
+    }
+
+     
 }

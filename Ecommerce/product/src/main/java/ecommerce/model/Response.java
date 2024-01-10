@@ -10,6 +10,7 @@ public class Response {
     private List<Product> productList;
 
     private String message;
+    private String status;
 
     public List<Product> getProductList() {
         return productList;
@@ -25,5 +26,13 @@ public class Response {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

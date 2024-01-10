@@ -1,5 +1,6 @@
 package ecommerce.controller;
 
+import ecommerce.customexception.ProductNotFoundException;
 import ecommerce.entity.Product;
 import ecommerce.model.ProductListRequest;
 import ecommerce.model.ProductRequest;
@@ -21,6 +22,7 @@ public class ProductController {
 
     @Autowired
     ProductRepository productRepository;
+
 
     @PostMapping("/add")
     public ResponseEntity<List<ProductRequest>> addProducts(@RequestBody ProductListRequest product){
@@ -48,6 +50,7 @@ public class ProductController {
         Response response = new Response();
         if(productId != null) {
             Optional<Product> product = productRepository.findById(productId);
+         //   Product spProduct = productRepository.fetchProductBasedOnId(2); -> using sp
             if(product.isPresent()){
                 List<Product> productList = new ArrayList<>();
                 productList.add(product.get());
@@ -63,5 +66,22 @@ public class ProductController {
             return response;
     }
 
-     
+    @PatchMapping("/update")
+    public ResponseEntity<Product> updateProduct(@RequestParam Long productId,
+                                  @RequestBody ProductRequest product){
+        Product productData = productRepository.findById(productId).
+                orElseThrow(()-> new ProductNotFoundException("provide valid product id"));
+        //use model mapper to map dto to entity;
+        Product productData1 = new Product();
+        productData1.setProductId(productId);
+        productData1.setProductName(product.getProductname());
+     //   productData1.setProductDescription(product.getProdutDescription());
+        productData1.setStatus(product.getStatus());
+
+        Product updateData = productRepository.save(productData1);
+
+        return ResponseEntity.ok(updateData);
+    }
+
+
 }

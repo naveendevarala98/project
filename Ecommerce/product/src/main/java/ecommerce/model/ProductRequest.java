@@ -3,7 +3,6 @@ package ecommerce.model;
 
 
 public class ProductRequest {
-
     String productname;
 
     String produtDescription;
